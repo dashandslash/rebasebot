@@ -61,9 +61,14 @@ func Rebase(w http.ResponseWriter, r *http.Request) {
 				log.Printf("bot.merge.started, name: %s\n", event.Repository.FullName)
 				defer log.Printf("bot.merge.finished: %s\n", event.Repository.FullName)
 
+				bodyMessageRunes := strings.SplitAfterN(event.Comment.Body, "\n", 2)
 				pullRequest, err := event.Repository.FindPR(event.Issue.Number)
 				if err == nil {
-					integrations.GitMerge(pullRequest)
+					if len(bodyMessageRunes) < 2 {
+						integrations.GitMerge(pullRequest, "")
+					} else {
+						integrations.GitMerge(pullRequest, bodyMessageRunes[1])
+					}
 				}
 			}
 		}

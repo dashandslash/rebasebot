@@ -176,10 +176,10 @@ func Rebase(repositoryPath, baseBranch string) error {
 }
 
 // Merge branch
-func Merge(repositoryPath, branch string) error {
+func Merge(repositoryPath, branch string, message string) error {
 	log.Println("git.merge.started:", repositoryPath, branch)
 
-	cmd := exec.Command("git", "merge", "--no-ff", branch)
+	cmd := exec.Command("git", "merge", "--no-ff", "-m", message, branch)
 	cmd.Dir = path.Join(repositoryPath)
 
 	if err := cmd.Run(); err != nil {

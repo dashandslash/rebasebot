@@ -62,7 +62,7 @@ func GitRebase(pr *github.PullRequest) error {
 
 
 // Ties the git operations together to perform a branch rebase
-func GitMerge(pr *github.PullRequest) error {
+func GitMerge(pr *github.PullRequest, message string) error {
 
 	filepath := git.GetRepositoryFilePath(pr.Head.Repository.FullName)
 	remoteRepositoryURL := git.GenerateCloneURL(pr.Head.Repository.FullName)
@@ -126,7 +126,7 @@ func GitMerge(pr *github.PullRequest) error {
 		return err
 	}
 
-	if err := git.Merge(filepath, pr.Head.Ref); err != nil {
+	if err := git.Merge(filepath, pr.Head.Ref, message); err != nil {
 		pr.PostComment("I could not merge " + pr.Head.Ref + " into " + pr.Base.Ref + ". WTF!")
 		return err
 	}
