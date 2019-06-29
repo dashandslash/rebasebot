@@ -175,6 +175,23 @@ func Rebase(repositoryPath, baseBranch string) error {
 	return nil
 }
 
+// Merge branch
+func Merge(repositoryPath, branch string) error {
+	log.Println("git.merge.started:", repositoryPath, branch)
+
+	cmd := exec.Command("git", "merge", "--no-ff", branch)
+	cmd.Dir = path.Join(repositoryPath)
+
+	if err := cmd.Run(); err != nil {
+		log.Println("git.merge.failed:", repositoryPath, err.Error())
+		return err
+	}
+
+	log.Println("git.merge.finished:", repositoryPath, branch)
+
+	return nil
+}
+
 // Light wrapper around os/exec.Command + logging
 func Prune(repositoryPath string) error {
 	log.Println("git.remote.prune.started:", repositoryPath)

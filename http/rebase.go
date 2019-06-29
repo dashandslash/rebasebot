@@ -47,17 +47,27 @@ func Rebase(w http.ResponseWriter, r *http.Request) {
 	}
 
 	go func() {
-		if !(strings.Compare(event.Action, "created") == 0 && github.WasMentioned(event.Comment) && strings.Contains(event.Comment.Body, "rebase")) {
-			return
-		}
+		if (strings.Compare(event.Action, "created") == 0 && github.WasMentioned(event.Comment)) {
 
-		log.Printf("bot.rebase.started, name: %s\n", event.Repository.FullName)
-		defer log.Printf("bot.rebase.finished: %s\n", event.Repository.FullName)
+			if strings.Contains(event.Comment.Body, "rebase") {
+				log.Printf("bot.rebase.started, name: %s\n", event.Repository.FullName)
+				defer log.Printf("bot.rebase.finished: %s\n", event.Repository.FullName)
 
-		pullRequest, err := event.Repository.FindPR(event.Issue.Number)
-		if err == nil {
-			integrations.GitRebase(pullRequest)
+				pullRequest, err := event.Repository.FindPR(event.Issue.Number)
+				if err == nil {
+					integrations.GitRebase(pullRequest)
+				}
+			} else if strings.Contains(event.Comment.Body, "merge") {
+				log.Printf("bot.merge.started, name: %s\n", event.Repository.FullName)
+				defer log.Printf("bot.merge.finished: %s\n", event.Repository.FullName)
+
+				pullRequest, err := event.Repository.FindPR(event.Issue.Number)
+				if err == nil {
+					integrations.GitMerge(pullRequest)
+				}
+			}
 		}
+		return
 	}()
 
 	w.WriteHeader(responseStatus)
