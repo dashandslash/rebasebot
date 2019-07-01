@@ -7,6 +7,22 @@ import (
 	"github.com/chrisledet/rebasebot/github"
 )
 
+// var witty_witty []string;
+
+// var witty_fails []string;
+
+// func WittyCharacterInit(){
+// 	witty_witty = []string{"apple",
+// 		"banana",
+// 		"kiwi"}
+
+// 		witty_fails = []string{"Done!\n Probably you heard this before:\n I did it, but I did not enjoy it...",
+
+			
+// 		}
+// }
+
+
 // Ties the git operations together to perform a branch rebase
 func GitRebase(pr *github.PullRequest) error {
 	
@@ -52,11 +68,11 @@ func GitRebase(pr *github.PullRequest) error {
 	}
 
 	if err := git.Push(filepath, pr.Head.Ref); err != nil {
-		pr.PostComment("I could not push the changes to " + pr.Base.Ref + ".")
+		pr.PostComment("I could not push the changes to " + pr.Base.Ref + "." + "Next time use your fingers for more than just picking your nose.")
 		return err
 	}
 
-	pr.PostComment("I just pushed up the changes, enjoy!")
+	pr.PostComment("Rebase done!")
 	return nil
 }
 
@@ -127,7 +143,8 @@ func GitMerge(pr *github.PullRequest, message string) error {
 	}
 
 	if err := git.Merge(filepath, pr.Head.Ref, message); err != nil {
-		pr.PostComment("I could not merge " + pr.Head.Ref + " into " + pr.Base.Ref + ". WTF!")
+
+		pr.PostComment("I could not merge " + pr.Head.Ref + " into " + pr.Base.Ref + "." + "\nNext time use your fingers for more than just picking your nose.")
 		return err
 	}
 
@@ -136,6 +153,6 @@ func GitMerge(pr *github.PullRequest, message string) error {
 		return err
 	}
 
-	pr.PostComment("I just pushed up the changes, enjoy!")
+	pr.PostComment("I just merged " + pr.Head.Ref + " into " + pr.Base.Ref+ "\nProbably you heard this before:\nI did it, but I did not enjoy it...")
 	return nil
 }
